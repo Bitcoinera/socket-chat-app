@@ -5,17 +5,18 @@ const login = document.getElementById('loginPage');
 const loginForm = document.getElementById('loginForm');
 const chatForm = document.getElementById('chatForm');
 const chat = document.getElementById('chatPage');
-const input = document.getElementById('loginName');
+const loginInput = document.getElementById('loginName');
 
 chat.style.display = 'none';
 
 const setUserName = (data) => {
 
-    let username = input.value;
+    let username = loginInput.value;
 
     if (username) {
         login.style.display = 'none';
         chat.style.display = 'block';
+        message.focus();
 
         socket.emit('add user', username);
     }
