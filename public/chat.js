@@ -9,6 +9,8 @@ const loginInput = document.getElementById('loginName');
 
 chat.style.display = 'none';
 
+let username;
+
 const setUserName = (data) => {
 
     let username = loginInput.value;
@@ -29,6 +31,7 @@ const addParticipant = (data) => {
     } else {
         message = `there are ${data.numUser} participants`;
     }
+    console.log(message);
 }
 
 loginForm.addEventListener('submit', function(e) {
@@ -36,20 +39,28 @@ loginForm.addEventListener('submit', function(e) {
     setUserName();
 })
 
-socket.on('login', (data) => {
-    console.log(data);
-})
-
 chatForm.addEventListener('submit', function(e) {
     e.preventDefault();
     socket.emit('new message', message.value);
     message.value = '';
+    addChatMessage({
+        username: username,
+        message: message.value
+    })
     return false
 });
 
-socket.on('new message', (data) => {
+const addChatMessage = (data) => {
     let newLi = document.createElement('li');
     let textNode = document.createTextNode(data.message);
     newLi.appendChild(textNode);
     messages.appendChild(newLi);
+}
+
+socket.on('login', (data) => {
+    console.log(data);
 })
+
+socket.on('new message', (data => {
+    addChatMessage(data);
+}))
