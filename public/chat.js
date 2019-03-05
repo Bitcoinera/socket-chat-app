@@ -36,6 +36,16 @@ $(function() {
         console.log(message);
     }
 
+    const addChatMessage = (data) => {
+        let $usernameDiv = $('<span class="username"/>')
+            .text(data.username + ' - ');
+        let $msgBodyDiv = $('<span class="msgBody"/>')
+            .text(data.message);
+        let $msgDiv = $('<li class="msg"/>')
+            .append($usernameDiv, $msgBodyDiv);
+        messages.append($msgDiv);
+    }
+
     loginForm.submit( (e) => {
         e.preventDefault();
         setUserName();
@@ -54,23 +64,12 @@ $(function() {
     chatInput.on('input', () => {
         if (!typing) {
             typing = true;
-            console.log('user is typing');
             socket.emit('typing');
         }
         setTimeout(() => {
             typing = false;
-        }, 500);
+        }, 1000);
     })
-
-    const addChatMessage = (data) => {
-        let $usernameDiv = $('<span class="username"/>')
-            .text(data.username + ' - ');
-        let $msgBodyDiv = $('<span class="msgBody"/>')
-            .text(data.message);
-        let $msgDiv = $('<li class="msg"/>')
-            .append($usernameDiv, $msgBodyDiv);
-        messages.append($msgDiv);
-    }
 
     socket.on('login', (data) => {
         console.log(data);
@@ -83,14 +82,13 @@ $(function() {
     socket.on('typing', (data) => {
         let $usernameDiv = $('<span class="username"/>')
             .text(data.username + ' - ');
-        let $msgBodyDiv = $('<span class="msgBody"/>')
+        let $msgBodyDiv = $('<span class="typingMsgBody"/>')
             .text('is typing');
-        let $msgDiv = $('<li class="msg"/>')
+        let $msgDiv = $('<li class="typingMsg"/>')
             .append($usernameDiv, $msgBodyDiv);
-        setTimeout( () => {
-            messages.remove($msgDiv)
-        }, 1000);
         messages.append($msgDiv);
+        setTimeout( () => {
+            $('.typingMsg').remove();
+        }, 1000)
     })
-
 })
