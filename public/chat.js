@@ -44,15 +44,20 @@ $(function() {
         e.preventDefault();
         socket.emit('new message', message.val());
         message.val('');
-        addChatMessage({
-            username: username,
-            message: message.val()
-        })
-        return false
+        // addChatMessage({
+        //     username: username,
+        //     message: message.val()
+        // })
     });
 
     const addChatMessage = (data) => {
-        messages.append($('<li>').text(data.message));
+        let $usernameDiv = $('<span class="username"/>')
+            .text(data.username + ' - ');
+        let $msgBodyDiv = $('<span class="msgBody"/>')
+            .text(data.message);
+        let $msgDiv = $('<li class="msg"/>')
+            .append($usernameDiv, $msgBodyDiv);
+        messages.append($msgDiv);
     }
 
     socket.on('login', (data) => {
