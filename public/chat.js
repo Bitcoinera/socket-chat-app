@@ -3,6 +3,7 @@ const message = document.getElementById('m');
 const messages = document.getElementById('messages');
 const login = document.getElementById('loginPage');
 const loginForm = document.getElementById('loginForm');
+const chatForm = document.getElementById('chatForm');
 const chat = document.getElementById('chatPage');
 const input = document.getElementById('loginName');
 
@@ -38,16 +39,16 @@ socket.on('login', (data) => {
     console.log(data);
 })
 
-document.getElementsByTagName('form')[0].addEventListener('submit', function(e) {
+chatForm.addEventListener('submit', function(e) {
     e.preventDefault();
     socket.emit('new message', message.value);
     message.value = '';
     return false
 });
 
-socket.on('new message', (msg) => {
+socket.on('new message', (data) => {
     let newLi = document.createElement('li');
-    let textNode = document.createTextNode(msg);
+    let textNode = document.createTextNode(data.message);
     newLi.appendChild(textNode);
     messages.appendChild(newLi);
 })

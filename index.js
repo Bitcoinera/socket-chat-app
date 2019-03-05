@@ -27,11 +27,6 @@ io.on('connection', (socket) => {
     })
 });
 
-// app.get('/', (req, res) => {
-//     res.render('/public/index.html');
-// });
-// ------> app.get no era necesario. El routing se hace a través de app.use
-
 http.listen(3000, (req, res) => {
     console.log('listening to port 3000');
 });
