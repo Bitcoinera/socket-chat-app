@@ -1,6 +1,6 @@
 $(function() {
     let socket = io();
-    const message = $('#m');
+    const chatInput = $('#m');
     const messages = $('#messages');
     const login = $('#loginPage');
     const loginForm = $('#loginForm');
@@ -11,6 +11,7 @@ $(function() {
     chat.hide();
 
     let username;
+    let typing = false;
 
     const setUserName = (data) => {
 
@@ -19,7 +20,7 @@ $(function() {
         if (username) {
             login.fadeOut();
             chat.show();
-            message.focus();
+            chatInput.focus();
 
             socket.emit('add user', username);
         }
@@ -42,13 +43,24 @@ $(function() {
 
     chatForm.submit( (e) => {
         e.preventDefault();
-        socket.emit('new message', message.val());
-        message.val('');
+        socket.emit('new message', chatInput.val());
+        chatInput.val('');
         // addChatMessage({
         //     username: username,
         //     message: message.val()
         // })
     });
+
+    chatInput.on('input', () => {
+        if (!typing) {
+            typing = true;
+            console.log('user is typing');
+            socket.emit('typing');
+        }
+        setTimeout(() => {
+            typing = false;
+        }, 500);
+    })
 
     const addChatMessage = (data) => {
         let $usernameDiv = $('<span class="username"/>')
@@ -67,5 +79,18 @@ $(function() {
     socket.on('new message', (data => {
         addChatMessage(data);
     }))
+
+    socket.on('typing', (data) => {
+        let $usernameDiv = $('<span class="username"/>')
+            .text(data.username + ' - ');
+        let $msgBodyDiv = $('<span class="msgBody"/>')
+            .text('is typing');
+        let $msgDiv = $('<li class="msg"/>')
+            .append($usernameDiv, $msgBodyDiv);
+        setTimeout( () => {
+            messages.remove($msgDiv)
+        }, 1000);
+        messages.append($msgDiv);
+    })
 
 })

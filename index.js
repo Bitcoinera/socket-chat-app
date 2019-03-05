@@ -18,6 +18,12 @@ io.on('connection', (socket) => {
         socket.emit('login', numUser);
     })
 
+    socket.on('typing', () => {
+        socket.emit('typing', {
+            username: socket.username
+        });
+    })
+
     socket.on('new message', (msg) => {
         console.log('message: ' + msg);
         io.emit('new message', {
